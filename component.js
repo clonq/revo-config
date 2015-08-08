@@ -17,7 +17,10 @@ module.exports = function() {
             ret[component][key].push(value);
             fs.writeFile('appconfig.json', JSON.stringify(ret, null, 4), function (err) {
                 if (err) process.emit('config.error', err);
-                else process.emit('config.'+component+'.change', ret[component][key]);
+                else {
+                    console.log(component, 'config updated:', ret[component])
+                    process.emit('config.'+component+'.change', ret[component]);
+                }
             });
         });
 
