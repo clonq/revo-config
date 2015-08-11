@@ -7,6 +7,10 @@ module.exports = function() {
 
         loadConfigData();
 
+        process.on('config:get', function(pin){
+            process.emit('config:get.response', { component: pin, data: ret[pin] })
+        });
+
         process.on('config:push', function(pin){
             var component = Object.keys(pin)[0];
             var entry = pin[component];
