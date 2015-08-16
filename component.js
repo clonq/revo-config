@@ -16,13 +16,20 @@ module.exports = function() {
             var entry = pin[component];
             var key = Object.keys(entry)[0];
             var value = entry[key];
+            value = JSON.parse(JSON.stringify(value), function(k, v){
+                if(Object.prototype.toString.call(v) != "[object Object]") {
+                    if (!!v && !isNaN(v)) v = Number(v); 
+                    else if(!!v && (v.indexOf('[') == 0)) v = JSON.parse(v);
+                }
+                return v;
+            });
             ret[component] = ret[component] || {};// ensure the `component` key exixts
             ret[component][key] = ret[component][key] || [];//config:push always adds to exiting values
             ret[component][key].push(value);
             fs.writeFile('appconfig.json', JSON.stringify(ret, null, 4), function (err) {
                 if (err) process.emit('config.error', err);
                 else {
-                    console.log(component, 'config updated:', ret[component])
+                    console.log(component, 'config updated:', JSON.stringify(ret[component]));
                     process.emit('config.'+component+'.change', ret[component]);
                 }
             });
@@ -36,7 +43,7 @@ module.exports = function() {
 
         function loadConfigData(delay) {
             var delay = delay || 1;
-            console.log('loading config data after', delay, 'ms');
+            // console.log('loading config data after', delay, 'ms');
             setTimeout(function(){
                 var oldConfig = require(configFilename);
                 for(key in oldConfig) {
