@@ -11,6 +11,33 @@ module.exports = function() {
             process.emit('config:get.response', { component: pin, data: ret[pin] })
         });
 
+        process.on('config:delete', function(pin){
+            var component = pin.component;
+            var componentConfig = ret[component];
+            var pathData = componentConfig[pin.path];//todo: allow for complex path; only one level deep is currently supported 
+            var pathDataType = Object.prototype.toString.call(pathData);
+            var conditionTerms = pin.condition.split(' ');
+            if(pathDataType === '[object Array]') {//todo: support all types
+                for(var i=0; i<pathData.length; i++) {
+                    var entry = pathData[i];
+                    if(conditionTerms[1] == 'eq') {//todo: support other conditions
+                        var key = conditionTerms[0];
+                        var value = conditionTerms[2];
+                        if(entry[key] == value) {
+                            pathData.splice(i, 1);
+                        }
+                    }
+                }
+            }
+            fs.writeFile('appconfig.json', JSON.stringify(ret, null, 4), function (err) {
+                if (err) process.emit('config.error', err);
+                else {
+                    console.log(component, 'config updated:', JSON.stringify(ret[component]));
+                    process.emit('config.'+component+'.change', ret[component]);
+                }
+            });
+        });
+
         process.on('config:push', function(pin){
             var component = Object.keys(pin)[0];
             var entry = pin[component];
