@@ -1,9 +1,19 @@
 # revo-config
-application config component for the revo container
+Application configuration component for [revo](https://github.com/clonq/revo)
 
-Loads and updates appconfig.json file and emits `config.<component>.new` and `config.<component>.change` events.
+Loads and updates `appconfig.json` file.
 
-Listens to `config:reload` and `config:push` events.
+Emits the following events:
+
+* config.&lt;component_name&gt;.new
+* config.&lt;component_name&gt;.change
+
+Listens to the following events:
+
+* config:delete
+* config:get
+* config:push
+* config:reload
 
 Sample config section:
 
