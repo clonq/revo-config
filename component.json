@@ -1,7 +1,9 @@
 {
-	"description": "revo config",
+	"name": "revo-config",
+	"description": "simple revo config component",
+	"user": "clonq",
 	"author": "Ovi Comes",
-	"version": "0.3.1",
+	"version": "0.3.0",
 	"dependencies": {
 	}
 }
